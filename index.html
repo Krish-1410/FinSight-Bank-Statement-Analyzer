@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          var origFetch = window.fetch;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function() { return origFetch; },
+            set: function(val) { origFetch = val; }
+          });
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinSight — Bank Data Analysis & Financial Dashboard</title>
+    <meta name="description" content="Premium bank statement CSV analysis and financial intelligence platform" />
+    <meta property="og:title" content="FinSight — Bank Data Analysis & Financial Dashboard" />
+    <meta property="og:description" content="Premium bank statement CSV analysis and financial intelligence platform" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/src/index.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body class="bg-[#ECEEF2] text-[#1A1F26] min-h-screen p-3 sm:p-5 lg:p-7 antialiased font-['Plus_Jakarta_Sans',sans-serif]">
+    
+    <!-- Outer Application Card -->
+    <div class="max-w-[1440px] mx-auto bg-white rounded-[28px] sm:rounded-[36px] p-5 sm:p-7 lg:p-9 shadow-card border border-slate-200/80">
+      
+      <!-- Top Sticky Navigation Bar -->
+      <header class="flex items-center justify-between pb-6 border-b border-slate-100">
+        <!-- Brand Logo -->
+        <a href="/" class="flex items-center gap-2.5 focus:outline-none">
+          <div class="w-9 h-9 rounded-full bg-[#0F5B41] flex items-center justify-center text-white shadow-xs">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5a2.5 2.5 0 0 1-2.5-2.5V8a2.5 2.5 0 0 1 5 0v2" />
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-slate-900">FinSight</span>
+        </a>
+
+        <!-- Center Floating Pill Menu -->
+        <nav class="hidden md:flex items-center bg-slate-100/80 p-1.5 rounded-full text-xs font-semibold text-slate-600 shadow-inner">
+          <a href="/dashboard.html" class="px-4 py-1.5 rounded-full bg-white text-slate-900 shadow-xs">Dashboard</a>
+          <a href="#product" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">Reports</a>
+          <a href="#workflow" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">Documents</a>
+          <a href="#security" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">Security</a>
+        </nav>
+
+        <!-- Right Action Buttons -->
+        <div class="flex items-center gap-3">
+          <a href="/login.html" class="text-xs font-bold text-slate-700 hover:text-slate-900 px-3 py-1.5">
+            Sign In
+          </a>
+          <button
+            id="btn-hero-instant-demo"
+            class="px-5 py-2 rounded-full bg-[#0F5B41] hover:bg-[#0A4C36] text-white text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
+          >
+            Explore Dashboard Live
+          </button>
+        </div>
+      </header>
+
+      <!-- Hero Section -->
+      <section class="pt-10 pb-16 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <!-- Hero Copy -->
+          <div class="lg:col-span-5 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#DDF4EA] text-[#0F5B41] text-xs font-bold">
+              <span class="w-2 h-2 rounded-full bg-[#0F5B41]"></span>
+              <span>Next-Gen Bank Data Analytics</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+              Know exactly where your money goes.
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+              Upload your bank statement and turn raw transaction data into clear, useful financial insights. Real balance analytics, recurring payment tracking, and automated cash flow categorization.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <button
+                id="btn-hero-launch"
+                class="px-6 py-3.5 rounded-full bg-[#0F5B41] hover:bg-[#0A4C36] text-white text-xs sm:text-sm font-bold shadow-card transition-all active:scale-95 text-center cursor-pointer"
+              >
+                Analyze My Statement
+              </button>
+              <a
+                href="/login.html"
+                class="px-6 py-3.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs sm:text-sm font-bold shadow-xs transition-all text-center"
+              >
+                Sign In to Account
+              </a>
+            </div>
+
+            <div class="pt-2 flex items-center gap-6 text-xs text-slate-500 font-medium">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-[#0F5B41]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>No Bank Credentials Needed</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-[#0F5B41]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>bcrypt Encrypted & Isolated</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Right: Live Interactive Dashboard Mockup matching reference image -->
+          <div class="lg:col-span-7">
+            <div class="bg-slate-50/70 p-4 sm:p-6 rounded-[32px] border border-slate-200/90 shadow-card space-y-5">
+              
+              <!-- Mock Header Row -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-[10px] text-[#0F5B41] font-bold uppercase tracking-wider">Preview Environment</div>
+                  <h3 class="text-sm font-bold text-slate-900">Welcome Back, Sujon</h3>
+                </div>
+                <div class="text-xs font-semibold px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-600 shadow-xs">
+                  29 Jun, 2026 - 29 August, 2026
+                </div>
+              </div>
+
+              <!-- Two Mini Cards Row -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                <!-- Emerald Credit Card widget -->
+                <div class="credit-card-emerald rounded-2xl p-4 text-white shadow-card flex flex-col justify-between h-36">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold tracking-wider italic">VISA</span>
+                    <span class="text-[10px] text-emerald-200/80 font-mono">)))</span>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-emerald-200/80 font-medium">Credit Card</div>
+                    <div class="text-xl font-bold tracking-tight text-white tabular-nums">₹ 95,000.00</div>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px] font-mono text-emerald-100/90 tracking-wider">
+                    <span>**** 909090</span>
+                    <span>EXP 09/28</span>
+                  </div>
+                </div>
+
+                <!-- Total Balance with sparkline -->
+                <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs flex flex-col justify-between">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-900">Payment Goal</span>
+                    <span class="badge-mint">+18.5%</span>
+                  </div>
+                  <div>
+                    <div class="text-[10px] text-slate-400">Total Balance</div>
+                    <div class="text-xl font-extrabold text-slate-900 tabular-nums">₹74,520.00</div>
+                  </div>
+                  <div class="flex items-center gap-2 pt-1">
+                    <span class="px-3 py-1 rounded-full bg-[#0F5B41] text-white text-[10px] font-semibold">Send ↑</span>
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-[10px] font-semibold">Receive ↓</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Engagement Rate Mini Bar Chart -->
+              <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-slate-900">Engagement Rate</span>
+                  <span class="badge-forest-dark">+17.8% (Peak)</span>
+                </div>
+                <div class="flex items-end justify-between h-20 px-2 pt-2">
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-6 h-8 bar-column-pattern"></div>
+                    <span class="text-[9px] text-slate-400 font-semibold">JAN</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-6 h-12 bar-column-pattern"></div>
+                    <span class="text-[9px] text-slate-400 font-semibold">FEB</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-6 h-10 bar-column-pattern"></div>
+                    <span class="text-[9px] text-slate-400 font-semibold">MAR</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-6 h-16 bar-column-active"></div>
+                    <span class="text-[9px] text-slate-800 font-bold">APR</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-6 h-11 bar-column-pattern"></div>
+                    <span class="text-[9px] text-slate-400 font-semibold">MAY</span>
+                  </div>
+                  <div class="flex flex-col items-center gap-1">
+                    <div class="w-6 h-13 bar-column-pattern"></div>
+                    <span class="text-[9px] text-slate-400 font-semibold">JUN</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section id="product" class="py-16 border-t border-slate-100">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="text-xs font-bold text-[#0F5B41] uppercase tracking-wider">Features</span>
+          <h2 class="text-3xl font-extrabold text-slate-900 mt-1">Complete financial clarity in seconds.</h2>
+          <p class="text-xs sm:text-sm text-slate-500 mt-2">Export your statement from any bank, upload it to FinSight, and see your financial health instantly.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-slate-50/70 p-6 rounded-3xl border border-slate-200/80 space-y-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-[#0F5B41] flex items-center justify-center font-bold">
+              1
+            </div>
+            <h3 class="text-sm font-bold text-slate-900">Automatic Rule Categorization</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Maps hundreds of merchants to Housing, Food & Dining, Transportation, Utilities, Subscriptions, and Shopping with zero manual effort.
+            </p>
+          </div>
+
+          <div class="bg-slate-50/70 p-6 rounded-3xl border border-slate-200/80 space-y-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-[#0F5B41] flex items-center justify-center font-bold">
+              2
+            </div>
+            <h3 class="text-sm font-bold text-slate-900">Recurring Payment Detection</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Detects repeating subscriptions, memberships, and bills with cadence analysis and estimated monthly costs.
+            </p>
+          </div>
+
+          <div class="bg-slate-50/70 p-6 rounded-3xl border border-slate-200/80 space-y-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-[#0F5B41] flex items-center justify-center font-bold">
+              3
+            </div>
+            <h3 class="text-sm font-bold text-slate-900">Total Cash Flow Analytics</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Track net cash flow, savings rate percentages, monthly burn trends, and export complete financial reports to CSV.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full bg-[#0F5B41] text-white flex items-center justify-center font-bold text-[10px]">
+            F
+          </div>
+          <span class="font-bold text-slate-900">FinSight</span>
+          <span>·</span>
+          <span>Clear financial insight from your transaction data.</span>
+        </div>
+        <div>
+          © 2026 FinSight. All rights reserved.
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Script for instant demo gateway -->
+    <script type="module">
+      import { api } from '/frontend/js/api.js';
+
+      async function launchDemo() {
+        try {
+          await api.auth.demoLogin();
+          window.location.href = '/dashboard.html';
+        } catch (e) {
+          window.location.href = '/login.html';
+        }
+      }
+
+      document.getElementById('btn-hero-instant-demo')?.addEventListener('click', launchDemo);
+      document.getElementById('btn-hero-launch')?.addEventListener('click', launchDemo);
+    </script>
+  </body>
+</html>

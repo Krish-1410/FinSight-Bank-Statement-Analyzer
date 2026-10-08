@@ -1,0 +1,6 @@
+{
+  "name": "FinSight",
+  "description": "Premium bank statement CSV analysis and financial intelligence platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

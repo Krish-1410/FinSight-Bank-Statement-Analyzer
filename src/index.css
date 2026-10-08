@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --brand-forest: #0F5B41;
+    --brand-dark-forest: #0A4C36;
+    --brand-mint: #DDF4EA;
+    --brand-sage: #8BC5B0;
+    --canvas-bg: #ECEEF2;
+    --card-surface: #FFFFFF;
+    --charcoal-main: #1A1F26;
+    --charcoal-sub: #64748B;
+    --border-light: #E2E8F0;
+  }
+
+  body {
+    background-color: #ECEEF2;
+    color: #1A1F26;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Card Surface & Soft Shadows */
+.card-shell {
+  background-color: #FFFFFF;
+  border-radius: 28px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -2px rgba(15, 23, 42, 0.02);
+}
+
+.card-shell-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-shell-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.08);
+}
+
+/* Dark Green Credit Card Gradient */
+.credit-card-emerald {
+  background: linear-gradient(135deg, #094732 0%, #0F5B41 55%, #073B29 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.credit-card-emerald::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+/* Textured Bar Chart Columns */
+.bar-column-pattern {
+  background: repeating-linear-gradient(
+    -45deg,
+    #7DBAA4,
+    #7DBAA4 3px,
+    #88C2AD 3px,
+    #88C2AD 7px
+  );
+  border-radius: 9999px;
+}
+
+.bar-column-active {
+  background: linear-gradient(180deg, #0F5B41 0%, #09432F 100%);
+  border-radius: 9999px;
+  box-shadow: 0 8px 18px -2px rgba(15, 91, 65, 0.35);
+}
+
+/* Mint Pill Badge */
+.badge-mint {
+  background-color: #DDF4EA;
+  color: #0F5B41;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.badge-forest-dark {
+  background-color: #0F5B41;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

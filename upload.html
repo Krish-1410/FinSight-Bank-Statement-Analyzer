@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function() {
+        try {
+          var origFetch = window.fetch;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function() { return origFetch; },
+            set: function(val) { origFetch = val; }
+          });
+        } catch (e) {}
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Bank Statement — FinSight</title>
+    <meta name="description" content="Upload your bank statement CSV file to analyze spending and track cash flow." />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body class="bg-[#ECEEF2] text-[#1A1F26] min-h-screen p-3 sm:p-5 lg:p-7 antialiased font-['Plus_Jakarta_Sans',sans-serif]">
+    
+    <div class="max-w-[1440px] mx-auto bg-white rounded-[28px] sm:rounded-[36px] p-5 sm:p-7 lg:p-9 shadow-card border border-slate-200/80">
+      
+      <!-- Top Navigation Bar -->
+      <header class="flex flex-col sm:flex-row items-center justify-between gap-4 pb-7 border-b border-slate-100">
+        <a href="/dashboard.html" class="flex items-center gap-2.5 focus:outline-none">
+          <div class="w-9 h-9 rounded-full bg-[#0F5B41] flex items-center justify-center text-white shadow-xs">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 14.5a2.5 2.5 0 0 1-2.5-2.5V8a2.5 2.5 0 0 1 5 0v2" />
+            </svg>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-slate-900">FinSight</span>
+        </a>
+
+        <nav class="flex items-center bg-slate-100/80 p-1.5 rounded-full text-xs font-semibold text-slate-600 shadow-inner">
+          <a href="/dashboard.html" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">Dashboard</a>
+          <a href="/upload.html" class="px-4 py-1.5 rounded-full bg-white text-slate-900 shadow-xs">Reports</a>
+          <a href="/transactions.html" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">Documents</a>
+          <a href="/transactions.html" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">History</a>
+          <a href="/insights.html" class="px-4 py-1.5 rounded-full hover:text-slate-900 transition-colors">Contacts</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="/api/statements/sample-csv" download class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-slate-200 text-xs font-bold text-slate-800 shadow-xs hover:bg-slate-50 transition-all">
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Sample CSV</span>
+          </a>
+          <a href="/profile.html" class="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full hover:bg-slate-50 transition-colors">
+            <div class="w-8 h-8 rounded-full bg-[#0F5B41] text-white flex items-center justify-center font-bold text-xs user-avatar-initial">
+              S
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Greeting & Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-7 pb-6">
+        <div>
+          <h1 class="text-3xl font-light text-slate-800 tracking-tight">
+            Bank Statement <span class="font-bold text-slate-900">Uploader</span>
+          </h1>
+          <p class="text-xs text-slate-500 mt-1">Upload a CSV transaction file and FinSight will automatically analyze your cash flow.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button id="btn-upload-demo" class="px-4 py-2 rounded-full bg-[#0F5B41] hover:bg-[#0A4C36] text-white text-xs font-bold shadow-xs transition-all cursor-pointer">
+            + Quick Load Sample Data
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Layout with Slim Icon Rail -->
+      <div class="flex gap-6 pt-2">
+        
+        <!-- Slim Floating Rail -->
+        <aside class="hidden xl:flex flex-col items-center justify-between w-13 py-5 bg-white rounded-3xl border border-slate-200/80 shadow-xs shrink-0 self-stretch">
+          <div class="space-y-4 flex flex-col items-center">
+            <a href="/dashboard.html" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-800 flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </a>
+            <a href="/upload.html" class="w-9 h-9 rounded-xl bg-[#0F5B41] text-white flex items-center justify-center shadow-xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            </a>
+            <a href="/transactions.html" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-800 flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </a>
+            <a href="/insights.html" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-800 flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </a>
+          </div>
+          <div>
+            <a href="/profile.html" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-800 flex items-center justify-center transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </a>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 min-w-0 space-y-6">
+          
+          <!-- Drop Area Card -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+            
+            <div
+              id="drop-zone"
+              class="border-2 border-dashed border-slate-200 hover:border-[#0F5B41] rounded-3xl p-8 sm:p-12 text-center cursor-pointer transition-all bg-slate-50/50 hover:bg-emerald-50/20"
+            >
+              <input type="file" id="csv-file-input" accept=".csv,text/csv" class="hidden" />
+
+              <div class="w-12 h-12 rounded-full bg-emerald-100 text-[#0F5B41] flex items-center justify-center mx-auto mb-3 shadow-xs">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+              </div>
+
+              <p class="text-sm font-bold text-slate-900 mb-1">Drag & drop your bank statement CSV here</p>
+              <p class="text-xs text-slate-500 mb-4">or click to browse files from your device</p>
+
+              <button
+                type="button"
+                id="btn-browse-file"
+                class="px-5 py-2 text-xs font-bold text-[#0F5B41] bg-emerald-50 hover:bg-emerald-100 rounded-full border border-emerald-200 transition-colors cursor-pointer"
+              >
+                Browse CSV Files
+              </button>
+            </div>
+
+            <!-- File Preview Card -->
+            <div id="file-preview-card" class="hidden p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-[#0F5B41] text-white flex items-center justify-center text-xs font-bold">
+                  CSV
+                </div>
+                <div>
+                  <div id="selected-file-name" class="text-xs font-bold text-slate-900">statement.csv</div>
+                  <div id="selected-file-size" class="text-[11px] text-slate-400">14.2 KB</div>
+                </div>
+              </div>
+              <button id="btn-remove-selected" class="text-xs text-rose-600 hover:text-rose-700 font-semibold cursor-pointer">
+                Remove
+              </button>
+            </div>
+
+            <!-- Analyze Button & Scope Option -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-slate-100">
+              <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
+                <input type="checkbox" id="check-clear-previous" checked class="w-4 h-4 rounded text-[#0F5B41] focus:ring-[#0F5B41] accent-[#0F5B41]" />
+                <span>Analyze ONLY this uploaded statement (Clear previous statements so data does not mix)</span>
+              </label>
+
+              <button
+                id="btn-analyze-upload"
+                disabled
+                class="px-6 py-2.5 rounded-full text-xs font-bold text-white bg-[#0F5B41] hover:bg-[#0A4C36] shadow-xs transition-all opacity-50 cursor-not-allowed shrink-0"
+              >
+                Analyze Transactions
+              </button>
+            </div>
+
+            <!-- Progress Loader -->
+            <div id="upload-progress-container" class="hidden space-y-2">
+              <div class="text-xs text-[#0F5B41] font-semibold">Normalizing transaction data & computing cash flow...</div>
+              <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-[#0F5B41] h-1.5 rounded-full animate-pulse w-3/4"></div>
+              </div>
+            </div>
+
+            <!-- Instant Analysis Results Summary Card -->
+            <div id="analysis-result-card" class="hidden p-5 sm:p-6 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-4">
+              <div class="flex items-center justify-between border-b border-emerald-200/80 pb-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping"></span>
+                  <span class="text-xs font-bold text-emerald-950 uppercase tracking-wide">Analysis Complete</span>
+                </div>
+                <a href="/dashboard.html" class="px-4 py-1.5 rounded-full bg-[#0F5B41] hover:bg-[#0A4C36] text-white text-xs font-bold shadow-xs transition-all">
+                  Open in Dashboard →
+                </a>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                  <div class="text-[10px] text-slate-400 font-semibold uppercase">Parsed Rows</div>
+                  <div id="result-tx-count" class="text-base font-extrabold text-slate-900 mt-0.5 tabular-nums">0</div>
+                </div>
+
+                <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                  <div class="text-[10px] text-slate-400 font-semibold uppercase">Total Inflow</div>
+                  <div id="result-total-income" class="text-base font-extrabold text-emerald-700 mt-0.5 tabular-nums">₹0.00</div>
+                </div>
+
+                <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                  <div class="text-[10px] text-slate-400 font-semibold uppercase">Total Outflow</div>
+                  <div id="result-total-spend" class="text-base font-extrabold text-slate-900 mt-0.5 tabular-nums">₹0.00</div>
+                </div>
+
+                <div class="p-3 bg-white rounded-xl border border-emerald-100">
+                  <div class="text-[10px] text-slate-400 font-semibold uppercase">Net Cash Flow</div>
+                  <div id="result-net-flow" class="text-base font-extrabold text-emerald-700 mt-0.5 tabular-nums">+₹0.00</div>
+                </div>
+              </div>
+
+              <div class="text-[11px] text-emerald-800 font-medium">
+                Statement period: <span id="result-date-range" class="font-bold text-emerald-950">Recent</span>. Categories automatically categorized and added to your portfolio.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- History Table -->
+          <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 mb-0.5">Uploaded Bank Statements</h3>
+                <p class="text-xs text-slate-400">Manage and delete imported statement history.</p>
+              </div>
+
+              <button
+                id="btn-clear-all-statements"
+                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200 shadow-2xs transition-all cursor-pointer"
+                title="Wipe all previous uploaded statements and transactions"
+              >
+                <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Clear All Old Statements</span>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="text-slate-400 font-medium border-b border-slate-100 pb-2">
+                    <th class="py-2.5 px-3">File Name</th>
+                    <th class="py-2.5 px-3">Transactions</th>
+                    <th class="py-2.5 px-3">Period</th>
+                    <th class="py-2.5 px-3">Uploaded</th>
+                    <th class="py-2.5 px-3 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="statements-history-tbody" class="divide-y divide-slate-50">
+                  <!-- Real Data Loaded Dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </main>
+
+      </div>
+
+    </div>
+
+    <script type="module" src="/frontend/js/upload.js"></script>
+  </body>
+</html>
